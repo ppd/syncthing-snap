@@ -47,6 +47,11 @@ apps:
   disable-autostart:
     command: bin/disable-autostart.sh
 
+  daemon:
+    command: bin/syncthing-daemon.sh
+    daemon: simple
+    plugs: *plugs
+
 parts:
   scripts:
     plugin: dump
