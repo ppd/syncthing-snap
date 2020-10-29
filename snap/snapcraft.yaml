@@ -1,0 +1,72 @@
+name: syncthing-ppd 
+base: core20 
+version: "1.10.0"
+summary:  Open Source Continuous File Synchronization
+description: |
+  Syncthing is a continuous file synchronization program. It synchronizes files between 
+  two or more computers in real time, safely protected from prying eyes. Your data is 
+  your data alone and you deserve to choose where it is stored, whether it is shared with 
+  some third party, and how it's transmitted over the internet.
+
+  This is an unofficial package. Please do not complain to upstream.
+
+  To enable autostart, run syncthing-ppd.enable-autostart or add the "Start Syncthing"
+  app to your startup applications manually.
+  To show the UI, run the "Syncthing Web UI" app or execute syncthing-ppd.show-ui.
+
+grade: stable 
+confinement: strict
+
+license: "MPL-2.0"
+
+apps:
+  syncthing:
+    command: bin/launch-syncthing.sh
+    autostart: syncthing-start.desktop      
+    plugs: &plugs
+      - home
+      - network
+      - network-bind
+      - removable-media
+
+  start-in-background:
+    command: bin/start-syncthing-in-background.sh
+    desktop: syncthing-start.desktop
+    plugs: *plugs
+
+  show-ui:
+    command: bin/show-syncthing-web-ui.sh
+    desktop: syncthing-ui.desktop
+    plugs: 
+      - network-bind
+      - desktop
+
+  enable-autostart:
+    command: bin/enable-autostart.sh
+
+  disable-autostart:
+    command: bin/disable-autostart.sh
+
+parts:
+  scripts:
+    plugin: dump
+    source: scripts
+    organize: 
+      "*.sh": bin/
+
+  syncthing:
+    plugin: go
+    source: https://github.com/syncthing/syncthing.git
+    source-tag: v1.10.0
+    override-build: |
+      set -xe
+      go run build.go build
+      ui_desktop_file="etc/linux-desktop/syncthing-ui.desktop"
+      start_desktop_file="etc/linux-desktop/syncthing-start.desktop"
+      sed_cmd="sed -i -E s|^Icon=.*|Icon=\${SNAP}/syncthing.svg|g"
+      $sed_cmd "$ui_desktop_file"
+      $sed_cmd "$start_desktop_file"
+      install -D syncthing "$SNAPCRAFT_PART_INSTALL/bin/syncthing"
+      install "$ui_desktop_file" "${SNAPCRAFT_PART_INSTALL}/"
+      install "$start_desktop_file" "${SNAPCRAFT_PART_INSTALL}/"
+      install assets/logo-only.svg "${SNAPCRAFT_PART_INSTALL}/syncthing.svg"
