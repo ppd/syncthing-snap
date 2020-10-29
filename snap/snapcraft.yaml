@@ -19,6 +19,11 @@ confinement: strict
 
 license: "MPL-2.0"
 
+architectures:
+  - build-on: amd64
+  - build-on: arm64
+  - build-on: armhf
+
 apps:
   syncthing:
     command: bin/launch-syncthing.sh
