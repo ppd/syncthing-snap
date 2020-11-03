@@ -33,18 +33,12 @@ apps:
       - network
       - network-bind
       - removable-media
-
-  start-in-background:
-    command: bin/start-syncthing-in-background.sh
-    desktop: syncthing-start.desktop
-    plugs: *plugs
+      - desktop
 
   show-ui:
-    command: bin/show-syncthing-web-ui.sh
+    command: bin/show-syncthing.sh
     desktop: syncthing-ui.desktop
-    plugs: 
-      - network-bind
-      - desktop
+    plugs: *plugs
 
   enable-autostart:
     command: bin/enable-autostart.sh
