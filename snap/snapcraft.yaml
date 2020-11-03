@@ -64,6 +64,16 @@ parts:
     organize: 
       "*.sh": bin/
 
+  http-prompt:
+    plugin: go
+    source: http-prompt
+    source-type: local
+    override-build: |
+      set -xe
+      go build -o http-prompt
+      install -D http-prompt "$SNAPCRAFT_PART_INSTALL/bin/http-prompt"
+      install prompt-for-autostart.html "$SNAPCRAFT_PART_INSTALL/"
+
   syncthing:
     plugin: go
     source: https://github.com/syncthing/syncthing.git

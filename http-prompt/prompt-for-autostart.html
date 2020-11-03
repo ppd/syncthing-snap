@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Enable Autostart for Syncthing</title>
+  <style type="text/css">
+    body {
+      background-color: #fff;
+    }
+
+    main {
+      width: 800px;
+      line-height: 1.5;
+      margin-top: 5em;
+      margin-left: auto;
+      margin-right: auto;
+      border: 1px solid #999;
+      background-color: white;
+      box-shadow: 0 2px 1px -1px rgba(0, 0, 0, .2), 0 1px 1px 0 rgba(0, 0, 0, .14), 0 1px 3px 0 rgba(0, 0, 0, .12);
+      border-radius: 3px;
+    }
+
+    #prompt {
+      padding: 1em;
+    }
+
+    #buttons {
+      display: flex;
+      border-top: 1px solid #999;
+      background-color: #eee;
+      padding: 1em;
+      border-bottom-left-radius: 3px;
+      border-bottom-right-radius: 3px;
+    }
+
+    #buttons form {
+      margin-left: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <section id="prompt">
+      <h1 id="prompt-title">Enable Autostart for Syncthing</h1>
+      It is recommended to add Syncthing to your autostart applications so it can start synchronizing your files
+      automatically. Do you want me to do this for you?
+    </section>
+    <section id="buttons">
+      <form>
+        <button id="no-button" type="button" name="action" value="no">No</button>
+        <button id="yes-button" autofocus type="button" name="action" value="yes">Yes</button>
+      </form>
+    </section>
+  </main>
+
+  <script type="text/javascript">
+    const redirectTo = "http://localhost:8384"
+    const yesButton = document.getElementById("yes-button")
+    const noButton = document.getElementById("no-button")
+
+    function sendAction(action) {
+      console.log("sendAction", action)
+      return fetch("http://localhost:8383/answer", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ action })
+      })
+    }
+
+    async function onClick(action) {
+      try {
+        const response = await sendAction(action)
+        const text = await response.text()
+        if (text != "ok") {
+          throw new Error("Unexpected response", text)
+        }
+        window.location.assign(redirectTo)
+      } catch (e) {
+        console.error(e)
+        alert(e.message)
+      }
+    }
+
+    yesButton.onclick = () => { onClick("yes") }
+    noButton.onclick = () => { onClick("no") }
+  </script>
+
+</body>
+
+</html>
