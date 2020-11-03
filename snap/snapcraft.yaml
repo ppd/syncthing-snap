@@ -1,6 +1,6 @@
 name: syncthing-ppd 
 base: core20 
-version: "1.10.0"
+version: "1.11.1"
 summary:  Open Source Continuous File Synchronization
 description: |
   Syncthing is a continuous file synchronization program. It synchronizes files between 
@@ -67,7 +67,7 @@ parts:
   syncthing:
     plugin: go
     source: https://github.com/syncthing/syncthing.git
-    source-tag: v1.10.0
+    source-tag: v1.11.1
     override-build: |
       set -xe
       go run build.go build
