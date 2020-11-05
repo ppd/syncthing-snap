@@ -5,4 +5,4 @@ export HOME="$realhome"
 export XDG_CONFIG_HOME="$SNAP_USER_COMMON"
 export STNOUPGRADE="1"
 
-$SNAP/bin/syncthing "$@"
+nice -n 9 $SNAP/bin/syncthing "$@"
